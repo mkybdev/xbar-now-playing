@@ -1,13 +1,14 @@
 # xbar Music Now Playing (TypeScript/JXA)
 
-A TypeScript-based xbar plugin for macOS Music app, featuring type-safe JXA (JavaScript for Automation) and modern aesthetics.
+A TypeScript-based xbar plugin for the macOS Music app, featuring type-safe JXA (JavaScript for Automation) and modern aesthetics with system icons.
 
 ## Features
 
-- 🎵 **Live Status**: Shows current track and artist in the menu bar. Highlights in pink (#FF2D55) when playing.
-- 🕹️ **Playback Controls**: Play/Pause, Next, and Previous track controls directly from the menu.
-- 🔔 **Desktop Notifications**: Automatic notifications on track changes (can be toggled in settings).
-- 📝 **Modern Tech Stack**: Powered by Bun and TypeScript for high performance and reliability.
+- 🎵 **Status Bar**: Shows the current track status with sleek icons (▶︎/⏸).
+- 🕹️ **Quick Controls**: `⏮ Previous`, `▶︎ Play/Pause`, and `⏭ Next` buttons directly in the dropdown.
+- 📋 **Track Details**: Displays Song Title, Artist, Album, and Composer with optimized layouts for English and Japanese text.
+- 🔔 **Smart Notifications**: Optional desktop notifications when the track changes (can be toggled in the menu).
+- ⚡ **Modern Stack**: Built with Bun and TypeScript for near-instant execution and full type safety.
 
 ## Requirements
 
@@ -17,7 +18,9 @@ A TypeScript-based xbar plugin for macOS Music app, featuring type-safe JXA (Jav
 
 ## Setup
 
-### 1. Install Bun (If not installed)
+### 1. Install Bun
+
+If you haven't installed Bun yet:
 
 ```bash
 curl -fsSL https://bun.sh/install | bash
@@ -25,41 +28,37 @@ curl -fsSL https://bun.sh/install | bash
 
 ### 2. Install Dependencies
 
-Run the following in the project directory:
+Clone this repository and install the required JXA packages:
 
 ```bash
+cd xbar-now-playing
 bun install
 ```
 
-### 3. Register with xbar
+### 3. Add to xbar
 
-Create a symbolic link to the script in your xbar plugins directory (typically `~/Library/Application Support/xbar/plugins`):
+Create a symbolic link in your xbar plugins directory (typically `~/Library/Application Support/xbar/plugins`). The suffix `.10s.ts` tells xbar to refresh every 10 seconds.
 
 ```bash
-# Move to xbar plugins directory
-cd "$HOME/Library/Application Support/xbar/plugins"
-
-# Create symbolic link (The filename determines the refresh interval, e.g., .10s.ts)
-ln -s "/path/to/your/project/music-now-playing.ts" "music-now-playing.10s.ts"
+# Example command
+ln -s "$(pwd)/music-now-playing.ts" "$HOME/Library/Application Support/xbar/plugins/music-now-playing.10s.ts"
 ```
 
-After creating the link, select "Refresh all contents" from the xbar menu.
+Then, click **"Refresh all contents"** in your xbar menu.
 
-## Configuration
+## Configuration & Usage
 
-The plugin automatically creates a configuration file at `~/.xbar-now-playing.json` on its first run.
-You can toggle desktop notifications via the "Notifications Disabled/Enabled" menu item.
+- **Notifications**: Click the "Notifications" item in the menu to toggle desktop alerts on/off. Settings are persisted in `~/.xbar-now-playing.json`.
+- **Refresh Rate**: To change the refresh interval, simply rename the symbolic link (e.g., `...1s.ts` for 1-second updates).
 
 ## Development
 
-This project uses Biome for linting and formatting:
-
+Lint and format with Biome:
 ```bash
-bunx @biomejs/biome check music-now-playing.ts
+bunx @biomejs/biome check --write music-now-playing.ts
 ```
 
-To run a type check:
-
+Type check:
 ```bash
 bunx tsc --noEmit
 ```

@@ -1,30 +1,47 @@
 {
-  "compilerOptions": {
-    // Environment setup & latest features
-    "lib": ["ESNext", "DOM"],
-    "target": "ESNext",
-    "module": "Preserve",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
+	"compilerOptions": {
+		// // Environment setup & latest features
+		// // "lib": ["ESNext", "DOM"],
+		// // "target": "ESNext",
+		// // "module": "Preserve",
+		// "moduleDetection": "bundler",
+		// "jsx": "react-jsx",
+		// "allowJs": true,
 
-    // Bundler mode
-    "moduleResolution": "node",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
+		// // Bundler mode
+		// // "moduleResolution": "node",
+		// "allowImportingTsExtensions": true,
+		// // "verbatimModuleSyntax": true,
+		// "noEmit": true,
 
-    // Best practices
-    "strict": true,
-    "skipLibCheck": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
+		// // Best practices
+		// // "strict": true,
+		// "skipLibCheck": true,
+		// "noFallthroughCasesInSwitch": true,
+		// "noUncheckedIndexedAccess": true,
+		// "noImplicitOverride": true,
 
-    // Some stricter flags (disabled by default)
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "types": ["@jxa/global-type", "node", "bun"]
-  }
+		// // Some stricter flags (disabled by default)
+		// "noUnusedLocals": false,
+		// "noUnusedParameters": false,
+		// "noPropertyAccessFromIndexSignature": false,
+		// "types": ["@jxa/global-type", "node", "bun"],
+
+		// "module": "commonjs",
+		// "moduleResolution": "node",
+		// "target": "es6",
+		// "sourceMap": true,
+		// "declaration": true,
+		// "lib": ["es6"],
+		// "strict": true
+
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"esModuleInterop": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"types": ["node", "bun"]
+	}
 }

@@ -1,16 +1,17 @@
 #!/bin/sh
-":" //; export PATH="$PATH:$HOME/.bun/bin:/usr/local/bin:/opt/homebrew/bin"; exec bun "$0" "$@"
+":"; //; export PATH="$PATH:$HOME/.bun/bin:/usr/local/bin:/opt/homebrew/bin"; exec bun "$0" "$@"
 
-import "@jxa/global-type";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { run } from "@jxa/run";
-import type { iTunes as JXANS } from "@jxa/types";
 
-/**
- * Type Definitions
- */
-interface MusicApp extends JXANS.iTunes {
+import type JXAAppBase from "@jxa/types/src/Application";
+import type { iTunes } from "@jxa/types/src/core/ITunes";
+
+type JXAApplication = typeof JXAAppBase;
+
+type JXANS_iTunes = iTunes;
+interface MusicApp extends JXANS_iTunes {
   running(): boolean;
 }
 
@@ -47,6 +48,7 @@ interface TrackInfo {
   name: string;
   artist: string;
   album: string;
+  composer: string;
   duration: number;
 }
 
@@ -59,7 +61,10 @@ interface MusicState {
 const Music = {
   async getState() {
     return await run<MusicState | null>(() => {
-      const music = Application("Music") as unknown as MusicApp;
+      const { Application: app } = globalThis as unknown as {
+        Application: JXAApplication;
+      };
+      const music = app("Music") as unknown as MusicApp;
       if (!music.running()) return null;
 
       const track = music.currentTrack();
@@ -71,6 +76,7 @@ const Music = {
           name: track.name(),
           artist: track.artist(),
           album: track.album(),
+          composer: track.composer(),
           duration: track.duration(),
         },
       };
@@ -79,7 +85,10 @@ const Music = {
 
   async playPause() {
     await run(() => {
-      const music = Application("Music") as unknown as MusicApp;
+      const { Application: app } = globalThis as unknown as {
+        Application: JXAApplication;
+      };
+      const music = app("Music") as unknown as MusicApp;
       if (music.running()) {
         music.playpause();
       }
@@ -88,7 +97,10 @@ const Music = {
 
   async next() {
     await run(() => {
-      const music = Application("Music") as unknown as MusicApp;
+      const { Application: app } = globalThis as unknown as {
+        Application: JXAApplication;
+      };
+      const music = app("Music") as unknown as MusicApp;
       if (music.running()) {
         music.nextTrack();
       }
@@ -97,7 +109,10 @@ const Music = {
 
   async previous() {
     await run(() => {
-      const music = Application("Music") as unknown as MusicApp;
+      const { Application: app } = globalThis as unknown as {
+        Application: JXAApplication;
+      };
+      const music = app("Music") as unknown as MusicApp;
       if (music.running()) {
         music.previousTrack();
       }
@@ -106,7 +121,10 @@ const Music = {
 
   async launch() {
     await run(() => {
-      const music = Application("Music");
+      const { Application: app } = globalThis as unknown as {
+        Application: JXAApplication;
+      };
+      const music = app("Music");
       music.activate();
     });
   },
@@ -114,10 +132,12 @@ const Music = {
   async notify(trackName: string, artist: string) {
     await run(
       (name: string, artistName: string) => {
-        // biome-ignore lint/suspicious/noExplicitAny: JXA's StandardAdditions typing is complex
-        const app = Application.currentApplication() as any;
-        app.includeStandardAdditions = true;
-        app.displayNotification(artistName, {
+        const { Application: app } = globalThis as unknown as {
+          Application: JXAApplication;
+        };
+        const currentApp = app.currentApplication();
+        currentApp.includeStandardAdditions = true;
+        currentApp.displayNotification(artistName, {
           withTitle: "Now Playing",
           subtitle: name,
         });
@@ -179,7 +199,7 @@ if (args.length > 0) {
   }
 
   const isPlaying = state.playerState === "playing";
-  const { name, artist, album, id } = state.track;
+  const { name, artist, album, composer, id } = state.track;
 
   // Notification Check
   if (config.notificationsEnabled && config.lastTrackId !== id) {
@@ -197,20 +217,20 @@ if (args.length > 0) {
    * Modern Design Elements
    */
   const statusIcon = isPlaying ? "▶︎" : "⏸";
-  const statusColor = isPlaying ? "#FF2D55" : "#888888";
+  const statusColor = "#FFFFFF";
 
   // Status Bar Output
-  console.log(
-    `${statusIcon} ${name} - ${artist} | color=${statusColor} dropdown=true`,
-  );
+  console.log(`${statusIcon} | color=${statusColor} dropdown=true`);
 
   // Dropdown Menu Output
   console.log("---");
-  console.log(
-    `${name} | size=14 color=${statusColor} font=AppleSystemUIFontBold`,
-  );
-  console.log(`${artist} | size=12`);
-  console.log(`${album} | size=12 color=#666666`);
+  for (const [i, line] of [name, artist, album, composer].entries()) {
+    if (!line) continue;
+    const isHalfWidth = /^[a-zA-Z0-9\s\-_.,!?]*$/.test(line);
+    const length = isHalfWidth ? 30 : 20;
+    console.log(`${line} | color=${statusColor} length=${length}`);
+    if (i === 0) console.log("---");
+  }
   console.log("---");
 
   // Playback Controls

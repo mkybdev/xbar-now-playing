@@ -234,23 +234,23 @@ if (args.length > 0) {
   console.log("---");
 
   // Playback Controls
-  const playPauseLabel = isPlaying ? "Pause" : "Play";
+  const playPauseLabel = isPlaying ? "⏸ Pause" : "▶︎ Play";
   console.log(
     `${playPauseLabel} | shell=${selfPath} param1=playpause terminal=false refresh=true`,
   );
   console.log(
-    `Next Track | shell=${selfPath} param1=next terminal=false refresh=true`,
+    `⏭ Next Track | shell=${selfPath} param1=next terminal=false refresh=true`,
   );
   console.log(
-    `Previous Track | shell=${selfPath} param1=previous terminal=false refresh=true`,
+    `⏮ Previous Track | shell=${selfPath} param1=previous terminal=false refresh=true`,
   );
 
   console.log("---");
 
   // Settings
   const notificationLabel = config.notificationsEnabled
-    ? "✓ Notifications Enabled"
-    : "Notifications Disabled";
+    ? "✓ Notifications (Click to Disable)"
+    : "Notifications (Click to Enable)";
   console.log(
     `${notificationLabel} | shell=${selfPath} param1=toggle-notification terminal=false refresh=true`,
   );

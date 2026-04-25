@@ -67,19 +67,27 @@ const Music = {
       const music = app("Music") as unknown as MusicApp;
       if (!music.running()) return null;
 
-      const track = music.currentTrack();
-      return {
-        running: true,
-        playerState: music.playerState(),
-        track: {
-          id: track.id(),
-          name: track.name(),
-          artist: track.artist(),
-          album: track.album(),
-          composer: track.composer(),
-          duration: track.duration(),
-        },
-      };
+      try {
+        const track = music.currentTrack();
+        return {
+          running: true,
+          playerState: music.playerState(),
+          track: {
+            id: track.id(),
+            name: track.name(),
+            artist: track.artist(),
+            album: track.album(),
+            composer: track.composer(),
+            duration: track.duration(),
+          },
+        };
+      } catch (_e) {
+        return {
+          running: true,
+          playerState: music.playerState(),
+          track: null as unknown as TrackInfo,
+        };
+      }
     });
   },
 
@@ -190,10 +198,14 @@ if (args.length > 0) {
   if (!state?.running || !state.track) {
     console.log("🎵");
     console.log("---");
-    console.log("Music is not running");
-    console.log(
-      `Launch Music | shell=${selfPath} param1=launch terminal=false refresh=true`,
-    );
+    if (state?.running) {
+      console.log("Music is stopped");
+    } else {
+      console.log("Music is not running");
+      console.log(
+        `Launch Music | shell=${selfPath} param1=launch terminal=false refresh=true`,
+      );
+    }
     console.log("---");
     process.exit(0);
   }
